@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Breakout Clone (Auto, Aiming)</title>
     <style>
-        canvas { border: 1px solid white; background: black; }
+        canvas { border: 1px solid white; background: black; touch-action: none; } /* Prevent default touch actions */
         body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #111; }
     </style>
 </head>
@@ -13,6 +13,10 @@
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+
+        // Adjust canvas size for mobile
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
         // Game constants
         const PADDLE_WIDTH = 100;
@@ -95,6 +99,19 @@
             }
             return x;
         }
+
+        // Handle touch events
+        canvas.addEventListener('touchmove', function(event) {
+            let touch = event.touches[0];
+            let touchX = touch.clientX;
+
+            // Move paddleX based on touch position
+            paddleX = touchX - PADDLE_WIDTH / 2;
+
+            // Ensure paddle stays within canvas bounds
+            if (paddleX < 0) paddleX = 0;
+            if (paddleX > canvas.width - PADDLE_WIDTH) paddleX = canvas.width - PADDLE_WIDTH;
+        });
 
         // Game loop
         function gameLoop() {
